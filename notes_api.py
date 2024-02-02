@@ -28,6 +28,8 @@ put_note_args.add_argument('title',type=str)
 put_note_args.add_argument('body',type=str)
 put_note_args.add_argument('is_pinned',type=int)
 put_note_args.add_argument('in_trash',type=int)
+delete_note_args = reqparse.RequestParser()
+delete_note_args.add_argument('id',type=int,help='id is required',required=True)
 resource_fields = {
     'id' : fields.Integer ,
     'title' : fields.String ,
@@ -87,8 +89,18 @@ class Notes(Resource) :
             note.in_trash = 0
         db.session.commit()
         return note
+    
+    def delete(self) :
+        args = delete_note_args.parse_args()
+        note = NotesModel.query.filter_by(id = args['id']).first()
+        if not note :
+            abort(404,message='Oooops!, we couldn\'t find this note')
+        db.session.delete(note)
+        db.session.commit()
+        return {
+            'message' : 'note deleted successfully'
+        }
 # *****************************
-
 api.add_resource(Notes,'/notes')
 if __name__ == "__main__" :
     my_app.run(debug=True,host="0.0.0.0")
