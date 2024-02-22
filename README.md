@@ -49,6 +49,10 @@ Response is a list of note item
 ]
 
 ```
+If ther is no notes yet, the response will be an empty list
+```json
+[]
+```
 __________________________________________________
 
 ### /POST
@@ -146,6 +150,12 @@ Response is the updated note's details
     "in_trash": 0
 }
 
+```
+If the note is not exist
+```json
+{
+    "message": "Oooops!, we couldn't find this note"
+}
 ```
 __________________________________________________
 
