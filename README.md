@@ -198,3 +198,38 @@ Else
 }
 ```
 __________________________________________________
+## issues in development
+#### issue !
+  As of Flask-SQLAlchemy 3.0, all access to db.engine (and db.session) requires an active Flask application context. db.create_all uses db.engine .
+  - so create database function should be called as shown below
+```python
+with app.app_context():
+    db.create_all()
+```
+__________________________________________________
+## Dockerizing
+### How to dockerize ?
+#### steps : 
+  - Use Ubuntu as a base image
+  - update packages
+  - install python
+  - instal flask
+  - install flask-restful
+  - install flask-sqlalchemy
+  - copy project file to container
+  - run the source code
+#### Dockerfile
+```Dockerfile
+FROM ubuntu
+RUN apt update
+RUN apt install python3-pip -y
+RUN pip3 install flask
+RUN pip3 install flask-restful
+RUN pip3 install flask-sqlalchemy
+WORKDIR /app
+COPY . .
+CMD ["python3","/app/notes_api.py"]
+```
+_______________________________________________________________________
+_______________________________________________________________________
+## Thank you for reading
