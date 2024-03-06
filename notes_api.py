@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_restful import Api,Resource,abort,reqparse,fields,marshal_with
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 # ***********************************************
 my_app = Flask(__name__)
+cors = CORS(my_app)
 api = Api(my_app)
 # initiate database **********
 my_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sqlite.db'
@@ -41,6 +43,7 @@ resource_fields = {
 
 # request *********************
 class Notes(Resource) :
+
     @marshal_with(resource_fields)
     def get(self) :
         data = NotesModel.query.all()
@@ -55,8 +58,8 @@ class Notes(Resource) :
                     'in_trash' : note.in_trash ,
                 }
             )
-        
         return notes
+    
     @marshal_with(resource_fields)
     def post(self) :
         args = add_note_args.parse_args()
@@ -69,6 +72,7 @@ class Notes(Resource) :
         db.session.add(note)
         db.session.commit()
         return note , 201
+    
     @marshal_with(resource_fields)
     def put(self) :
         args = put_note_args.parse_args()
@@ -100,7 +104,8 @@ class Notes(Resource) :
         return {
             'message' : 'note deleted successfully'
         }
+    
 # *****************************
 api.add_resource(Notes,'/notes')
 if __name__ == "__main__" :
-    my_app.run(debug=True,host="0.0.0.0")
+    my_app.run(debug=True,host="0.0.0.0",port=4200)
